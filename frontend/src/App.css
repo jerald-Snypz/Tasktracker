@@ -1,0 +1,23 @@
+/* App.css */
+#root {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-container {
+  display: flex;
+  flex: 1;
+  height: 100%;
+  background-color: #f9fafb;
+}
+
+.main-content {
+  flex: 1;
+  padding: 0; /* Set padding to 24px if you want inner spacing */
+  overflow-y: auto;
+}
