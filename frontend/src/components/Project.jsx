@@ -19,38 +19,22 @@ const ProjectCard = ({ project, onDelete, onEdit }) => {
   const { title, description, progress, startDate, endDate, status } = project;
 
   return (
-    <Card
-      sx={{
-        borderRadius: 2,
-        boxShadow: 2,
-        p: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100%',
-      }}
-    >
+    <Card sx={{ borderRadius: 2, boxShadow: 2, p: 1, display: 'flex', flexDirection: 'column', height: '100%' }}>
       <CardContent>
         <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
           <Typography variant="h6" fontWeight="bold">{title}</Typography>
           <Chip label={status} color="error" size="small" />
         </Box>
-
-        <Typography variant="body2" color="text.secondary" mb={2}>
-          {description}
-        </Typography>
-
+        <Typography variant="body2" color="text.secondary" mb={2}>{description}</Typography>
         <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
           <Typography variant="body2">Progress</Typography>
           <Typography variant="body2">{progress}%</Typography>
         </Box>
-
         <LinearProgress variant="determinate" value={progress} sx={{ mb: 2 }} />
-
         <Box display="flex" justifyContent="space-between" mb={2}>
           <Typography variant="caption">{startDate}</Typography>
           <Typography variant="caption">{endDate}</Typography>
         </Box>
-
         <Box display="flex" justifyContent="flex-start" gap={2}>
           <Button size="small" sx={{ color: 'green' }} onClick={onEdit}>Edit</Button>
           <Button size="small" sx={{ color: 'red' }} onClick={onDelete}>Delete</Button>
@@ -91,6 +75,16 @@ const Projects = () => {
   const [editIndex, setEditIndex] = useState(null);
   const [editData, setEditData] = useState(null);
 
+  const [addOpen, setAddOpen] = useState(false);
+  const [addData, setAddData] = useState({
+    title: '',
+    description: '',
+    progress: 0,
+    startDate: '',
+    endDate: '',
+    status: '',
+  });
+
   const handleDelete = (index) => {
     setProjects(projects.filter((_, i) => i !== index));
   };
@@ -118,11 +112,30 @@ const Projects = () => {
     setEditData(null);
   };
 
+  // Add Project Handlers
+  const handleAddOpen = () => setAddOpen(true);
+  const handleAddClose = () => {
+    setAddOpen(false);
+    setAddData({ title: '', description: '', progress: 0, startDate: '', endDate: '', status: '' });
+  };
+
+  const handleAddChange = (e) => {
+    const { name, value } = e.target;
+    setAddData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleAddSave = () => {
+    setProjects(prev => [...prev, addData]);
+    handleAddClose();
+  };
+
   return (
     <Box component="main" sx={{ flexGrow: 1, p: 3, backgroundColor: '#f9f9f9', minHeight: '100vh' }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
         <Typography variant="h4" fontWeight="bold">Projects</Typography>
-        <Button variant="contained" color="primary" size="medium">+ Add Project</Button>
+        <Button variant="contained" color="primary" size="medium" onClick={handleAddOpen}>
+          + Add Project
+        </Button>
       </Box>
 
       <Grid container spacing={3}>
@@ -137,63 +150,37 @@ const Projects = () => {
         ))}
       </Grid>
 
-      {/* Edit Dialog */}
+      {/* Edit Project Dialog */}
       <Dialog open={editData !== null} onClose={handleEditCancel} fullWidth>
         <DialogTitle>Edit Project</DialogTitle>
         <DialogContent>
-          <TextField
-            margin="dense"
-            label="Title"
-            name="title"
-            fullWidth
-            value={editData?.title || ''}
-            onChange={handleEditChange}
-          />
-          <TextField
-            margin="dense"
-            label="Description"
-            name="description"
-            fullWidth
-            value={editData?.description || ''}
-            onChange={handleEditChange}
-          />
-          <TextField
-            margin="dense"
-            label="Progress (%)"
-            name="progress"
-            type="number"
-            fullWidth
-            value={editData?.progress || ''}
-            onChange={handleEditChange}
-          />
-          <TextField
-            margin="dense"
-            label="Start Date"
-            name="startDate"
-            fullWidth
-            value={editData?.startDate || ''}
-            onChange={handleEditChange}
-          />
-          <TextField
-            margin="dense"
-            label="End Date"
-            name="endDate"
-            fullWidth
-            value={editData?.endDate || ''}
-            onChange={handleEditChange}
-          />
-          <TextField
-            margin="dense"
-            label="Status"
-            name="status"
-            fullWidth
-            value={editData?.status || ''}
-            onChange={handleEditChange}
-          />
+          <TextField label="Title" name="title" fullWidth margin="dense" value={editData?.title || ''} onChange={handleEditChange} />
+          <TextField label="Description" name="description" fullWidth margin="dense" value={editData?.description || ''} onChange={handleEditChange} />
+          <TextField label="Progress (%)" name="progress" type="number" fullWidth margin="dense" value={editData?.progress || ''} onChange={handleEditChange} />
+          <TextField label="Start Date" name="startDate" fullWidth margin="dense" value={editData?.startDate || ''} onChange={handleEditChange} />
+          <TextField label="End Date" name="endDate" fullWidth margin="dense" value={editData?.endDate || ''} onChange={handleEditChange} />
+          <TextField label="Status" name="status" fullWidth margin="dense" value={editData?.status || ''} onChange={handleEditChange} />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleEditCancel}>Cancel</Button>
           <Button onClick={handleEditSave} variant="contained">Save</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Add Project Dialog */}
+      <Dialog open={addOpen} onClose={handleAddClose} fullWidth>
+        <DialogTitle>Add New Project</DialogTitle>
+        <DialogContent>
+          <TextField label="Title" name="title" fullWidth margin="dense" value={addData.title} onChange={handleAddChange} />
+          <TextField label="Description" name="description" fullWidth margin="dense" value={addData.description} onChange={handleAddChange} />
+          <TextField label="Progress (%)" name="progress" type="number" fullWidth margin="dense" value={addData.progress} onChange={handleAddChange} />
+          <TextField label="Start Date" name="startDate" fullWidth margin="dense" value={addData.startDate} onChange={handleAddChange} />
+          <TextField label="End Date" name="endDate" fullWidth margin="dense" value={addData.endDate} onChange={handleAddChange} />
+          <TextField label="Status" name="status" fullWidth margin="dense" value={addData.status} onChange={handleAddChange} />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleAddClose}>Cancel</Button>
+          <Button onClick={handleAddSave} variant="contained">Add</Button>
         </DialogActions>
       </Dialog>
     </Box>

@@ -40,7 +40,7 @@ const SidebarT = () => {
 
       <NavLink to="/team-dashboard" style={navItemStyle}>Dashboard</NavLink>
       <NavLink to="/team-tasks" style={navItemStyle}>Tasks</NavLink>
-      <NavLink to="/profile" style={navItemStyle}>Profile</NavLink>
+      
 
       <Button
         variant="contained"
